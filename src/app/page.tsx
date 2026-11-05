@@ -3,6 +3,8 @@ import { PenLine, MessageSquare, Languages, FileText, Image as Img, Share2, Sear
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { brand } from "@/config/brand";
+import { createClient } from "@/lib/supabase/server";
+import { supabaseConfigured } from "@/lib/supabase/env";
 import { plans, faqs } from "@/config/content";
 
 const tools = [
@@ -21,7 +23,15 @@ const steps = [
   ["Review and save", "Copy, download or save the result to a project."],
 ];
 
-export default function Home() {
+export default async function Home() {
+  let loggedIn = false;
+  if (supabaseConfigured) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    loggedIn = Boolean(user);
+  }
+  const ctaHref = loggedIn ? "/dashboard" : "/register";
+  const ctaText = loggedIn ? "Go to dashboard" : "Get started free";
   return (
     <>
       <Navbar />
@@ -33,7 +43,7 @@ export default function Home() {
               <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{brand.tagline}.</h1>
               <p className="mt-5 max-w-md text-lg text-muted">{brand.description}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/register" className="btn-primary">Get started free</Link>
+                <Link href={ctaHref} className="btn-primary">{ctaText}</Link>
                 <a href="#tools" className="btn-ghost">Try AI tools</a>
               </div>
             </div>
@@ -81,7 +91,7 @@ export default function Home() {
             {plans.map(([n, d]) => (
               <div key={n} className="panel flex flex-col p-5">
                 <h3 className="font-medium">{n}</h3><p className="mt-2 flex-1 text-sm text-muted">{d}</p>
-                <Link href="/register" className="btn-ghost mt-5"><Check className="h-4 w-4" aria-hidden />Choose {n}</Link>
+                <Link href={ctaHref} className="btn-ghost mt-5"><Check className="h-4 w-4" aria-hidden />Choose {n}</Link>
               </div>
             ))}
           </div>
@@ -100,7 +110,7 @@ export default function Home() {
           <div className="panel bg-gradient-to-br from-primary/25 to-card p-10 text-center">
             <h2 className="text-2xl font-semibold">Start with the free plan</h2>
             <p className="mx-auto mt-2 max-w-md text-muted">Create an account and try a tool in a minute.</p>
-            <Link href="/register" className="btn-primary mt-6">Get started free</Link>
+            <Link href={ctaHref} className="btn-primary mt-6">{ctaText}</Link>
           </div>
         </section>
       </main>
