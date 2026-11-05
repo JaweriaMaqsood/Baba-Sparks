@@ -3,7 +3,9 @@ import { PageShell } from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth/actions";
 import { supabaseConfigured } from "@/lib/supabase/env";
+import Link from "next/link";
 import { toolCategories } from "@/config/tools";
+import { tools } from "@/lib/ai/tools";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -26,8 +28,18 @@ export default async function Page() {
         <div className="panel p-5"><p className="text-sm text-muted">Credits available</p><p className="mt-1 text-xl font-medium">{bal?.balance ?? 0}</p></div>
         <div className="panel p-5"><p className="text-sm text-muted">Credits used</p><p className="mt-1 text-xl font-medium">{bal?.lifetime_used ?? 0}</p></div>
       </div>
-      <h2 className="mt-10 text-lg font-medium">AI tools</h2>
-      <p className="mt-1 text-sm text-muted">You are logged in. The tools below are being built and cannot be opened yet.</p>
+      <h2 className="mt-10 text-lg font-medium">Available now</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {tools.map((t) => (
+          <Link key={t.slug} href={`/tools/${t.slug}`} className="panel p-4 transition-colors hover:border-primary/50">
+            <h3 className="font-medium">{t.name}</h3>
+            <p className="mt-1 text-sm text-muted">{t.description}</p>
+            <span className="mt-2 inline-block text-xs text-accent">{t.cost} {t.cost === 1 ? "credit" : "credits"}</span>
+          </Link>
+        ))}
+      </div>
+      <h2 className="mt-10 text-lg font-medium">More tools</h2>
+      <p className="mt-1 text-sm text-muted">These categories are being built and cannot be opened yet.</p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {toolCategories.map((c) => (
           <div key={c.name} className="panel p-4 opacity-80">
