@@ -3,6 +3,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth/actions";
 import { supabaseConfigured } from "@/lib/supabase/env";
+import { toolCategories } from "@/config/tools";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -25,7 +26,16 @@ export default async function Page() {
         <div className="panel p-5"><p className="text-sm text-muted">Credits available</p><p className="mt-1 text-xl font-medium">{bal?.balance ?? 0}</p></div>
         <div className="panel p-5"><p className="text-sm text-muted">Credits used</p><p className="mt-1 text-xl font-medium">{bal?.lifetime_used ?? 0}</p></div>
       </div>
-      <p className="mt-6 text-sm text-muted">AI tools arrive in the next phase.</p>
+      <h2 className="mt-10 text-lg font-medium">AI tools</h2>
+      <p className="mt-1 text-sm text-muted">You are logged in. The tools below are being built and cannot be opened yet.</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {toolCategories.map((c) => (
+          <div key={c.name} className="panel p-4 opacity-80">
+            <h3 className="font-medium">{c.name}</h3>
+            <span className="mt-2 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Coming soon</span>
+          </div>
+        ))}
+      </div>
       <form action={signOut} className="mt-6"><button className="btn-ghost">Log out</button></form>
     </PageShell>
   );
