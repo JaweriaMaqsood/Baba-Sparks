@@ -63,13 +63,13 @@ export default async function Home() {
 
         <section id="tools" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
           <h2 className="text-2xl font-semibold">Tools for everyday work</h2>
-          <p className="mt-2 max-w-xl text-muted">Eight categories, each with focused tools that share the same credits. AI chat and image generation are coming soon.</p>
+          <p className="mt-2 max-w-xl text-muted">Eight categories, each with focused tools that share the same credits. Image generation is coming soon.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {tools.map(({ icon: I, name, text }) => (
               <div key={name} className="panel p-5 transition-colors hover:border-primary/50">
                 <I className="h-5 w-5 text-accent" aria-hidden />
                 <h3 className="mt-3 font-medium">{name}</h3>
-                {["AI chat", "Images"].includes(name) && <span className="mt-1 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Coming soon</span>}
+                {name === "Images" && <span className="mt-1 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Coming soon</span>}
                 <p className="mt-1 text-sm text-muted">{text}</p>
               </div>
             ))}

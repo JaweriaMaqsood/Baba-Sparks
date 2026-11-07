@@ -27,7 +27,8 @@ export default async function Page() {
         <div className="panel p-5"><p className="text-sm text-muted">Credits available</p><p className="mt-1 text-xl font-medium">{bal?.balance ?? 0}</p></div>
         <div className="panel p-5"><p className="text-sm text-muted">Credits used</p><p className="mt-1 text-xl font-medium">{bal?.lifetime_used ?? 0}</p></div>
       </div>
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link href="/chat" className="btn-primary">AI chat</Link>
         <Link href="/history" className="btn-ghost">History</Link>
         <Link href="/usage" className="btn-ghost">Usage &amp; credits</Link>
       </div>
@@ -45,7 +46,7 @@ export default async function Page() {
           </div>
         </section>
       ))}
-      <p className="mt-10 text-sm text-muted">Coming soon: AI chat and image generation.</p>
+      <p className="mt-10 text-sm text-muted">Coming soon: image generation.</p>
       <form action={signOut} className="mt-6"><button className="btn-ghost">Log out</button></form>
     </PageShell>
   );
