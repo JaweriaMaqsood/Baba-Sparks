@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { nav } from "@/config/brand";
 import { signOut } from "@/lib/auth/actions";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 
 export function NavbarView({ loggedIn }: { loggedIn: boolean }) {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ export function NavbarView({ loggedIn }: { loggedIn: boolean }) {
           {loggedIn ? (
             <>
               <Link href="/dashboard" className="btn-primary">Dashboard</Link>
-              <form action={signOut}><button className="btn-ghost">Log out</button></form>
+              <form action={signOut}><SubmitButton className="btn-ghost" pendingText="Logging out…">Log out</SubmitButton></form>
             </>
           ) : (
             <>
@@ -39,7 +40,7 @@ export function NavbarView({ loggedIn }: { loggedIn: boolean }) {
             {loggedIn ? (
               <>
                 <Link href="/dashboard" className="btn-primary flex-1">Dashboard</Link>
-                <form action={signOut} className="flex-1"><button className="btn-ghost w-full">Log out</button></form>
+                <form action={signOut} className="flex-1"><SubmitButton className="btn-ghost w-full" pendingText="Logging out…">Log out</SubmitButton></form>
               </>
             ) : (
               <>

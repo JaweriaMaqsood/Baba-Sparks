@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth/actions";
+import { SubmitButton } from "@/components/ui/SubmitButton";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
 import { tools } from "@/lib/ai/tools";
@@ -47,7 +48,7 @@ export default async function Page() {
         </section>
       ))}
       <p className="mt-10 text-sm text-muted">Coming soon: image generation.</p>
-      <form action={signOut} className="mt-6"><button className="btn-ghost">Log out</button></form>
+      <form action={signOut} className="mt-6"><SubmitButton className="btn-ghost" pendingText="Logging out…">Log out</SubmitButton></form>
     </PageShell>
   );
 }
