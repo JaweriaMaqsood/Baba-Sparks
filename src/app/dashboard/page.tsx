@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth/actions";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import Link from "next/link";
-import { toolCategories } from "@/config/tools";
 import { tools } from "@/lib/ai/tools";
 
 export const metadata = { title: "Dashboard" };
@@ -28,26 +27,25 @@ export default async function Page() {
         <div className="panel p-5"><p className="text-sm text-muted">Credits available</p><p className="mt-1 text-xl font-medium">{bal?.balance ?? 0}</p></div>
         <div className="panel p-5"><p className="text-sm text-muted">Credits used</p><p className="mt-1 text-xl font-medium">{bal?.lifetime_used ?? 0}</p></div>
       </div>
-      <h2 className="mt-10 text-lg font-medium">Available now</h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {tools.map((t) => (
-          <Link key={t.slug} href={`/tools/${t.slug}`} className="panel p-4 transition-colors hover:border-primary/50">
-            <h3 className="font-medium">{t.name}</h3>
-            <p className="mt-1 text-sm text-muted">{t.description}</p>
-            <span className="mt-2 inline-block text-xs text-accent">{t.cost} {t.cost === 1 ? "credit" : "credits"}</span>
-          </Link>
-        ))}
+      <div className="mt-6 flex gap-3">
+        <Link href="/history" className="btn-ghost">History</Link>
+        <Link href="/usage" className="btn-ghost">Usage &amp; credits</Link>
       </div>
-      <h2 className="mt-10 text-lg font-medium">More tools</h2>
-      <p className="mt-1 text-sm text-muted">These categories are being built and cannot be opened yet.</p>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {toolCategories.map((c) => (
-          <div key={c.name} className="panel p-4 opacity-80">
-            <h3 className="font-medium">{c.name}</h3>
-            <span className="mt-2 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Coming soon</span>
+      {Object.entries(tools.reduce<Record<string, typeof tools>>((acc, t) => { (acc[t.category] ??= []).push(t); return acc; }, {})).map(([cat, list]) => (
+        <section key={cat} className="mt-10">
+          <h2 className="text-lg font-medium">{cat}</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {list.map((t) => (
+              <Link key={t.slug} href={`/tools/${t.slug}`} className="panel p-4 transition-colors hover:border-primary/50">
+                <h3 className="font-medium">{t.name}</h3>
+                <p className="mt-1 text-sm text-muted">{t.description}</p>
+                <span className="mt-2 inline-block text-xs text-accent">{t.cost} {t.cost === 1 ? "credit" : "credits"}</span>
+              </Link>
+            ))}
           </div>
-        ))}
-      </div>
+        </section>
+      ))}
+      <p className="mt-10 text-sm text-muted">Coming soon: AI chat and image generation.</p>
       <form action={signOut} className="mt-6"><button className="btn-ghost">Log out</button></form>
     </PageShell>
   );

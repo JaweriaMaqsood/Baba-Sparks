@@ -63,5 +63,40 @@ export const tools: Tool[] = [
   },
 ];
 
+
+// ---- compact helpers for simple tools ----
+const area = (name: string, label: string, max = 1500, required = true, placeholder?: string): Field => ({ name, label, type: "textarea", required, max, placeholder });
+const txt = (name: string, label: string, max = 200, required = true, placeholder?: string): Field => ({ name, label, type: "text", required, max, placeholder });
+const sel = (name: string, label: string, options: string[]): Field => ({ name, label, type: "select", max: 30, options });
+const T = (slug: string, name: string, category: string, cost: number, description: string, fields: Field[], instruction: string): Tool => ({
+  slug, name, category, cost, description, fields,
+  build: (i) => `${instruction.replace(/\{(\w+)\}/g, (_, k) => i[k] || "")}\n${fields.filter((f) => f.type !== "select").map((f) => wrap(f.name, i[f.name] || "")).join("\n")}`,
+});
+
+tools.push(
+  T("blog-outline", "Blog outline", "SEO", 2, "A structured outline with headings and key points.", [area("topic", "Blog topic", 500), txt("audience", "Audience", 100, false)], "Write a blog post outline with an H1, H2 sections and 2-3 bullet points per section. Add a short list of FAQ ideas at the end."),
+  T("faq-generator", "FAQ generator", "SEO", 2, "Questions and answers for a page or product.", [area("topic", "Topic or product", 800)], "Write 8 frequently asked questions with short, accurate answers. Do not invent specific facts, prices or statistics."),
+  T("instagram-caption", "Instagram caption", "Social media", 1, "Five caption options with emojis.", [area("about", "What is the post about?", 500), sel("tone", "Tone", tones)], "Write 5 Instagram captions in a {tone} tone with a few fitting emojis. Number them."),
+  T("hashtag-generator", "Hashtag generator", "Social media", 1, "20 relevant hashtags.", [area("about", "Post or topic", 500)], "Suggest 20 relevant hashtags, mixing broad and niche ones. Output them on one line separated by spaces."),
+  T("youtube-title", "YouTube title", "Social media", 1, "Ten title ideas.", [area("about", "Video topic", 500)], "Write 10 YouTube title ideas under 70 characters each. Numbered list. No false claims."),
+  T("youtube-description", "YouTube description", "Social media", 2, "Description with a hook and chapters placeholder.", [area("about", "Video summary", 1000)], "Write a YouTube description: a 2-line hook, a short summary, a placeholder chapters section, and a call to action."),
+  T("linkedin-post", "LinkedIn post", "Social media", 2, "A professional post with a hook.", [area("about", "What do you want to share?", 1000), sel("tone", "Tone", tones)], "Write a LinkedIn post in a {tone} tone with a strong first line, short paragraphs, and a closing question. Do not invent achievements."),
+  T("tweet-generator", "Tweet generator", "Social media", 1, "Five tweets under 280 characters.", [area("about", "Topic", 500)], "Write 5 tweets, each under 280 characters. Numbered list."),
+  T("product-description", "Product description", "Business", 2, "Clear, benefit-led copy for a product page.", [txt("name", "Product name", 120), area("details", "Features and details", 1000)], "Write a product description with a headline, a short paragraph, and 4 benefit bullets. Use only the details given."),
+  T("business-name", "Business name ideas", "Business", 1, "Fifteen name ideas.", [area("about", "What does the business do?", 600)], "Suggest 15 short, memorable business names with a few words on the idea behind each. Note that availability must be checked separately."),
+  T("slogan-generator", "Slogan generator", "Business", 1, "Ten slogans.", [txt("brand", "Brand or product", 120), area("about", "What it offers", 500)], "Write 10 short slogans. Numbered list."),
+  T("facebook-ad-copy", "Facebook ad copy", "Business", 2, "Three ad variations.", [area("about", "Product and offer", 800), area("audience", "Target audience", 300, false)], "Write 3 Facebook ad variations, each with a headline, primary text and call to action. Do not invent discounts or claims."),
+  T("sales-email", "Sales email", "Business", 2, "A short outreach email.", [area("about", "What you sell and to whom", 1000)], "Write a short sales email with a subject line, a personal opening, one clear benefit, and a call to action. Use [Name] placeholders."),
+  T("swot-analysis", "SWOT analysis", "Business", 2, "AI-generated SWOT. Suggestions, not verified research.", [area("about", "Business or idea", 1000)], "Write a SWOT analysis with 4 points per quadrant. State at the end that this is an AI-generated suggestion and not verified market research."),
+  T("rewriter", "Rewriter", "Writing", 1, "Rewrite text in a new tone.", [area("text", "Your text", 4000), sel("tone", "Tone", tones)], "Rewrite the text in a {tone} tone. Keep the meaning and the language."),
+  T("paraphraser", "Paraphraser", "Writing", 1, "Say the same thing in different words.", [area("text", "Your text", 4000)], "Paraphrase the text with different wording and structure. Keep the meaning and the language."),
+  T("story-writer", "Story writer", "Writing", 3, "A short story from your idea.", [area("idea", "Story idea", 800), sel("length", "Length", ["Short (about 250 words)", "Medium (about 500 words)"])], "Write a story. Length: {length}. Give it a title, a clear beginning, middle and end."),
+  T("study-notes", "Study notes", "Productivity", 2, "Clear notes from your text.", [area("text", "Text or topic", 6000)], "Turn the material into organized study notes with headings, key terms and a short recap. Only use what is given."),
+  T("quiz-generator", "Quiz generator", "Productivity", 2, "Multiple-choice questions with answers.", [area("text", "Text or topic", 6000), sel("count", "Questions", ["5", "10"])], "Write {count} multiple-choice questions, each with 4 options, then an answer key with one-line explanations."),
+  T("flashcards", "Flashcard generator", "Productivity", 2, "Question and answer cards.", [area("text", "Text or topic", 6000)], "Create 10 flashcards in the format Q: ... / A: ... Use only the material given."),
+  T("todo-list", "To-do list", "Productivity", 1, "A prioritized checklist.", [area("text", "What do you need to get done?", 2000)], "Turn this into a prioritized to-do list with short action items."),
+  T("meeting-notes", "Meeting notes", "Productivity", 2, "Summary, decisions and action items.", [area("text", "Paste meeting notes or transcript", 8000)], "Write meeting notes with: Summary, Decisions, Action items (with owner if stated). Do not invent names or dates."),
+);
+
 export const getTool = (slug: string) => tools.find((t) => t.slug === slug);
 export const publicTool = ({ build, ...rest }: Tool): PublicTool => { void build; return rest; };
