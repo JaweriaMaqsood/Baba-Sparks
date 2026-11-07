@@ -20,6 +20,8 @@ export default async function Page() {
     supabase.from("credit_balances").select("balance, lifetime_used").eq("user_id", user.id).single(),
     supabase.from("subscriptions").select("plans(name)").eq("user_id", user.id).maybeSingle(),
   ]);
+  const { data: roleRow } = await supabase.from("user_roles").select("role").eq("user_id", user.id).maybeSingle();
+  const isAdmin = roleRow?.role === "admin";
   const plan = (sub?.plans as unknown as { name: string } | null)?.name ?? "Free";
   return (
     <PageShell title={`Welcome, ${profile?.full_name ?? "there"}`}>
@@ -32,6 +34,8 @@ export default async function Page() {
         <Link href="/chat" className="btn-primary">AI chat</Link>
         <Link href="/history" className="btn-ghost">History</Link>
         <Link href="/usage" className="btn-ghost">Usage &amp; credits</Link>
+        <Link href="/billing" className="btn-ghost">Billing</Link>
+        {isAdmin && <Link href="/admin" className="btn-ghost">Admin</Link>}
       </div>
       {Object.entries(tools.reduce<Record<string, typeof tools>>((acc, t) => { (acc[t.category] ??= []).push(t); return acc; }, {})).map(([cat, list]) => (
         <section key={cat} className="mt-10">
