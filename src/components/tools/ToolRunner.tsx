@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { toPlain } from "./CopyButton";
 import type { PublicTool } from "@/lib/ai/tools";
 
 const box = "mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2";
@@ -47,9 +49,9 @@ export function ToolRunner({ tool }: { tool: PublicTool }) {
       <div className="panel p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-medium">Result</h2>
-          {output && <button className="btn-ghost px-3 py-1 text-xs" onClick={async () => { await navigator.clipboard.writeText(output); setCopied(true); }}>{copied ? "Copied" : "Copy"}</button>}
+          {output && <button className="btn-ghost px-3 py-1 text-xs" onClick={async () => { await navigator.clipboard.writeText(toPlain(output)); setCopied(true); }}>{copied ? "Copied" : "Copy"}</button>}
         </div>
-        {output ? <p dir="auto" className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">{output}</p> : <p className="mt-4 text-sm text-muted">{busy ? "Working on it…" : "Your result will appear here."}</p>}
+        {output ? <div dir="auto" className="md mt-4 text-sm leading-relaxed"><ReactMarkdown>{output}</ReactMarkdown></div> : <p className="mt-4 text-sm text-muted">{busy ? "Working on it…" : "Your result will appear here."}</p>}
         {left !== null && <p className="mt-4 text-xs text-muted">Credits left: {left}</p>}
         {output && <p className="mt-2 text-xs text-muted">AI can make mistakes. Check important details.</p>}
       </div>

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
+import ReactMarkdown from "react-markdown";
 import { CopyButton } from "@/components/tools/CopyButton";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/env";
@@ -24,7 +25,7 @@ export default async function Page() {
                 <span className="font-medium">{getTool(r.tool_slug)?.name ?? r.tool_slug}</span>
                 <span className="ml-3 text-xs text-muted">{new Date(r.created_at).toLocaleString("en-GB")}</span>
               </summary>
-              <p dir="auto" className="mt-3 whitespace-pre-wrap text-sm">{r.output}</p>
+              <div dir="auto" className="md mt-3 text-sm"><ReactMarkdown>{r.output}</ReactMarkdown></div>
               <div className="mt-3"><CopyButton text={r.output} /></div>
             </details>
           ))}
