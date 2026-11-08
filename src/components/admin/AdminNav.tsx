@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const links = [["Overview", "/admin"], ["Payments", "/admin/payments"], ["Users", "/admin/users"], ["Plans", "/admin/plans"], ["Settings", "/admin/settings"]];
+const links = [["Overview", "/admin"], ["Payments", "/admin/payments"], ["Tickets", "/admin/tickets"], ["Users", "/admin/users"], ["Plans", "/admin/plans"], ["Settings", "/admin/settings"]];
 export function AdminNav() {
   const pathname = usePathname();
   return (

@@ -14,6 +14,8 @@ const appLinks = [
   { label: "History", href: "/history", also: [] as string[] },
   { label: "Usage", href: "/usage", also: [] as string[] },
   { label: "Billing", href: "/billing", also: [] as string[] },
+  { label: "Support", href: "/support", also: [] as string[] },
+  { label: "Settings", href: "/settings", also: [] as string[] },
 ];
 
 export function NavbarView({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: boolean }) {
@@ -27,12 +29,12 @@ export function NavbarView({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: 
     <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
         <Link href={loggedIn ? "/dashboard" : "/"} aria-label="Home"><Logo /></Link>
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
           {loggedIn
             ? links.map((l) => <Link key={l.href} href={l.href} aria-current={isActive(l) ? "page" : undefined} className={cls(isActive(l))}>{l.label}</Link>)
             : nav.map((n) => <a key={n.href} href={n.href} className={cls(false)}>{n.label}</a>)}
         </nav>
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           {loggedIn ? (
             <form action={signOut}><SubmitButton className="btn-ghost" pendingText="Logging out…">Log out</SubmitButton></form>
           ) : (
@@ -42,12 +44,12 @@ export function NavbarView({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: 
             </>
           )}
         </div>
-        <button className="md:hidden" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <button className="lg:hidden" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </button>
       </div>
       {open && (
-        <div className="space-y-1 border-t border-line bg-surface px-5 py-4 md:hidden">
+        <div className="space-y-1 border-t border-line bg-surface px-5 py-4 lg:hidden">
           {loggedIn
             ? links.map((l) => <Link key={l.href} href={l.href} onClick={() => setOpen(false)} aria-current={isActive(l) ? "page" : undefined} className={`block ${cls(isActive(l))}`}>{l.label}</Link>)
             : nav.map((n) => <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="block py-2 text-muted">{n.label}</a>)}

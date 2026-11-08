@@ -70,3 +70,15 @@ export async function updateSettings(fd: FormData) {
   revalidatePath("/admin", "layout");
   return back("/admin/settings", error?.message);
 }
+
+export async function replyTicket(id: string, fd: FormData) {
+  const { user, admin } = await requireAdmin();
+  const reply = z.string().trim().min(2, "Write a reply.").max(2000).safeParse(fd.get("reply"));
+  if (!uuid.safeParse(id).success) return back("/admin/tickets", "Invalid ticket.");
+  if (!reply.success) return back("/admin/tickets", reply.error.issues[0].message);
+  const { error } = await admin.from("support_tickets").update({ admin_reply: reply.data, status: "answered", replied_by: user.id, replied_at: new Date().toISOString() }).eq("id", id);
+  if (!error) await admin.from("audit_logs").insert({ actor_id: user.id, action: "ticket_answered", target_type: "support_ticket", target_id: id, details: {} });
+  revalidatePath("/admin", "layout");
+  revalidatePath("/support");
+  return back("/admin/tickets", error?.message);
+}
