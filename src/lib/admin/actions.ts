@@ -53,3 +53,20 @@ export async function updatePlan(planId: string, fd: FormData) {
   revalidatePath("/billing");
   return back("/admin/plans", error?.message);
 }
+
+export async function updateSettings(fd: FormData) {
+  const { user, admin } = await requireAdmin();
+  const p = z.object({
+    name: z.string().trim().max(60),
+    number: z.string().trim().regex(/^[0-9+\-\s]{7,20}$/, "Enter a valid JazzCash number."),
+  }).safeParse(Object.fromEntries(fd));
+  if (!p.success) return back("/admin/settings", p.error.issues[0].message);
+  const { error } = await admin.from("app_settings").upsert([
+    { key: "jazzcash_name", value: p.data.name, updated_at: new Date().toISOString() },
+    { key: "jazzcash_number", value: p.data.number, updated_at: new Date().toISOString() },
+  ]);
+  if (!error) await admin.from("audit_logs").insert({ actor_id: user.id, action: "settings_updated", target_type: "settings", target_id: "jazzcash", details: { name: p.data.name, number: p.data.number } });
+  revalidatePath("/billing");
+  revalidatePath("/admin", "layout");
+  return back("/admin/settings", error?.message);
+}

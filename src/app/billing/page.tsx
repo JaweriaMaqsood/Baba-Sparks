@@ -16,15 +16,17 @@ export default async function Page() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: plans }, { data: sub }, { data: reqs }] = await Promise.all([
+  const [{ data: plans }, { data: sub }, { data: reqs }, { data: settings }] = await Promise.all([
     supabase.from("plans").select("id, name, price_cents, currency, monthly_credits").eq("is_active", true).order("sort_order"),
     supabase.from("subscriptions").select("status, current_period_end, plans(name)").eq("user_id", user.id).maybeSingle(),
     supabase.from("payment_requests").select("id, amount_cents, currency, txn_ref, status, reject_reason, created_at, plans(name)").order("created_at", { ascending: false }).limit(20),
+    supabase.from("app_settings").select("key, value"),
   ]);
+  const cfg = Object.fromEntries((settings ?? []).map((r) => [r.key, r.value]));
   const paid = (plans ?? []).filter((p) => p.price_cents > 0);
   const current = (sub?.plans as unknown as { name: string } | null)?.name ?? "Free";
-  const jcName = process.env.JAZZCASH_NAME;
-  const jcNumber = process.env.JAZZCASH_NUMBER;
+  const jcName = cfg.jazzcash_name || process.env.JAZZCASH_NAME;
+  const jcNumber = cfg.jazzcash_number || process.env.JAZZCASH_NUMBER;
 
   return (
     <PageShell title="Billing" intro={`Current plan: ${current}${sub?.current_period_end ? ` (until ${new Date(sub.current_period_end).toLocaleDateString("en-GB")})` : ""}`}>
