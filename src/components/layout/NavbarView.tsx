@@ -32,7 +32,7 @@ export function NavbarView({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
           {loggedIn
             ? links.map((l) => <Link key={l.href} href={l.href} aria-current={isActive(l) ? "page" : undefined} className={cls(isActive(l))}>{l.label}</Link>)
-            : nav.map((n) => <a key={n.href} href={n.href} className={cls(false)}>{n.label}</a>)}
+            : nav.map((n) => <Link key={n.href} href={n.href} aria-current={pathname === n.href ? "page" : undefined} className={cls(pathname === n.href)}>{n.label}</Link>)}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
           {loggedIn ? (
@@ -52,7 +52,7 @@ export function NavbarView({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: 
         <div className="space-y-1 border-t border-line bg-surface px-5 py-4 lg:hidden">
           {loggedIn
             ? links.map((l) => <Link key={l.href} href={l.href} onClick={() => setOpen(false)} aria-current={isActive(l) ? "page" : undefined} className={`block ${cls(isActive(l))}`}>{l.label}</Link>)
-            : nav.map((n) => <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="block py-2 text-muted">{n.label}</a>)}
+            : nav.map((n) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)} aria-current={pathname === n.href ? "page" : undefined} className={`block ${cls(pathname === n.href)}`}>{n.label}</Link>)}
           <div className="flex gap-3 pt-3">
             {loggedIn ? (
               <form action={signOut} className="flex-1"><SubmitButton className="btn-ghost w-full" pendingText="Logging out…">Log out</SubmitButton></form>

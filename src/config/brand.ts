@@ -4,12 +4,12 @@ export const brand = {
   tagline: "One workspace for every AI task",
   description:
     "Write, chat, translate, summarize and create images from one dashboard. Pay with credits, only for what you use.",
-  supportEmail: "support@example.com",
+  supportEmail: "babasparks99@gmail.com",
 } as const;
 
 export const nav = [
-  { label: "Features", href: "/#features" },
-  { label: "AI tools", href: "/#tools" },
-  { label: "Pricing", href: "/#pricing" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "Features", href: "/features" },
+  { label: "AI tools", href: "/tools" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/faq" },
 ] as const;

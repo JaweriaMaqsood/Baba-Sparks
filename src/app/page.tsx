@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { PenLine, MessageSquare, Languages, FileText, Image as Img, Share2, Search, BriefcaseBusiness, Check } from "lucide-react";
+import { PenLine, MessageSquare, Languages, FileText, Image as Img, Share2, Search, BriefcaseBusiness } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { brand } from "@/config/brand";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/env";
-import { plans, faqs } from "@/config/content";
+import { faqs } from "@/config/content";
+import { PlanCards } from "@/components/marketing/PlanCards";
 
 const tools = [
   { icon: MessageSquare, name: "AI chat", text: "Saved conversations with streaming replies and model choice." },
@@ -56,7 +57,7 @@ export default async function Home() {
                 <p className="mb-2 text-xs text-accent">Example output</p>
                 Slim handmade leather wallets built for travel. Hold cards, cash and a passport slip without the bulk.
               </div>
-              <div className="mt-4 flex items-center justify-between text-xs text-muted"><span>Costs 1 credit</span><span className="btn-primary px-3 py-1.5 text-xs">Generate</span></div>
+              <div className="mt-4 flex items-center justify-between text-xs text-muted"><span>Costs 1 credit</span><Link href="/tools/seo-meta-description" className="btn-primary px-3 py-1.5 text-xs">Try this tool</Link></div>
             </div>
           </div>
         </section>
@@ -66,12 +67,12 @@ export default async function Home() {
           <p className="mt-2 max-w-xl text-muted">Eight categories, each with focused tools that share the same credits. Image generation is coming soon.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {tools.map(({ icon: I, name, text }) => (
-              <div key={name} className="panel p-5 transition-colors hover:border-primary/50">
+              <Link key={name} href="/tools" className="panel block p-5 transition-colors hover:border-primary/50">
                 <I className="h-5 w-5 text-accent" aria-hidden />
                 <h3 className="mt-3 font-medium">{name}</h3>
                 {name === "Images" && <span className="mt-1 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Coming soon</span>}
                 <p className="mt-1 text-sm text-muted">{text}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -86,15 +87,8 @@ export default async function Home() {
 
         <section id="pricing" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
           <h2 className="text-2xl font-semibold">Plans</h2>
-          <p className="mt-2 text-muted">Prices are not set yet. They will be managed from the admin panel.</p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {plans.map(([n, d]) => (
-              <div key={n} className="panel flex flex-col p-5">
-                <h3 className="font-medium">{n}</h3><p className="mt-2 flex-1 text-sm text-muted">{d}</p>
-                <Link href={ctaHref} className="btn-ghost mt-5"><Check className="h-4 w-4" aria-hidden />Choose {n}</Link>
-              </div>
-            ))}
-          </div>
+          <p className="mt-2 text-muted">Prices are in Pakistani rupees. Paid plans are activated after we check your JazzCash payment by hand.</p>
+          <PlanCards loggedIn={loggedIn} />
         </section>
 
         <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-5 pb-16">

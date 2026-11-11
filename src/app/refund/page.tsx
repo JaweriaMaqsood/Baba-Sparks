@@ -1,9 +1,5 @@
-import { PageShell } from "@/components/layout/PageShell";
+import { LegalDoc } from "@/components/layout/LegalDoc";
+import { refund } from "@/config/legal";
+
 export const metadata = { title: "Refund Policy" };
-export default function Page() {
-  return (
-    <PageShell title="Refund Policy" narrow>
-      <p className="rounded-xl border border-line bg-surface p-4 text-sm text-muted">Draft pending. The final Refund Policy must be written or reviewed by a qualified lawyer for your business and country before launch.</p>
-    </PageShell>
-  );
-}
+export default function Page() { return <LegalDoc doc={refund} />; }

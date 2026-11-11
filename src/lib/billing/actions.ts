@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "@/lib/auth/actions";
+import { notifyAdmin, link } from "@/lib/email/notify";
 
 const schema = z.object({
   plan: z.string().uuid("Choose a plan."),
@@ -30,6 +31,7 @@ export async function submitPayment(_: FormState, fd: FormData): Promise<FormSta
     if (error.message.includes("too many pending")) return { error: "You already have 3 payments waiting for review. Please wait for them to be checked." };
     return { error: "Could not submit. Please try again." };
   }
+  notifyAdmin("New payment to check", `${user.email} submitted a payment.\nTransaction ID: ${p.data.txn_ref}\nSender: ${p.data.sender_number}\n\nReview: ${link("/admin/payments")}`);
   revalidatePath("/billing");
   return { message: "Submitted. We will check the payment and activate your plan. You will see it here once approved." };
 }

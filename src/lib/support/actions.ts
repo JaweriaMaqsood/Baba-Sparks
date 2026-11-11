@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "@/lib/auth/actions";
+import { notifyAdmin, link } from "@/lib/email/notify";
 
 export async function createTicket(_: FormState, fd: FormData): Promise<FormState> {
   const p = z.object({
@@ -15,6 +16,7 @@ export async function createTicket(_: FormState, fd: FormData): Promise<FormStat
   if (!user) return { error: "Please log in." };
   const { error } = await supabase.from("support_tickets").insert({ user_id: user.id, subject: p.data.subject, message: p.data.message });
   if (error) return { error: error.message.includes("too many open") ? "You already have 5 open tickets. Please wait for replies." : "Could not send. Try again." };
+  notifyAdmin(`New support ticket: ${p.data.subject}`, `From: ${user.email}\n\n${p.data.message.slice(0, 500)}\n\nReply: ${link("/admin/tickets")}`);
   revalidatePath("/support");
   return { message: "Sent. We will reply here." };
 }
