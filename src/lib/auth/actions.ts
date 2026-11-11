@@ -25,7 +25,26 @@ export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
     options: { data: { full_name: p.data.name }, emailRedirectTo: `${await origin()}/auth/callback` },
   });
   if (error) return { error: "Could not create the account. Try a different email or password." };
-  return { message: "Check your email and click the link to verify your account." };
+  redirect(`/verify?email=${encodeURIComponent(p.data.email)}`);
+}
+
+export async function verifyCode(_: FormState, fd: FormData): Promise<FormState> {
+  if (!supabaseConfigured) return NOT_READY;
+  const p = z.object({ email, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code from the email.") }).safeParse(Object.fromEntries(fd));
+  if (!p.success) return { error: p.error.issues[0].message };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ email: p.data.email, token: p.data.code, type: "signup" });
+  if (error) return { error: "That code is wrong or has expired. Ask for a new one." };
+  redirect("/dashboard");
+}
+
+export async function resendCode(_: FormState, fd: FormData): Promise<FormState> {
+  if (!supabaseConfigured) return NOT_READY;
+  const p = z.object({ email }).safeParse(Object.fromEntries(fd));
+  if (!p.success) return { error: p.error.issues[0].message };
+  const supabase = await createClient();
+  await supabase.auth.resend({ type: "signup", email: p.data.email });
+  return { message: "If this email is waiting to be verified, a new code is on its way. Check spam too." }; // same reply either way
 }
 
 export async function signIn(_: FormState, fd: FormData): Promise<FormState> {

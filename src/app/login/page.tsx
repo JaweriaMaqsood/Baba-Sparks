@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <PageShell title="Log in" narrow>
       <AuthForm action={signIn} button="Log in" fields={[{ name: "email", label: "Email", type: "email", autoComplete: "email" }, { name: "password", label: "Password", type: "password", autoComplete: "current-password" }]} />
-      <p className="mt-4 text-sm text-muted"><Link href="/forgot-password" className="underline">Forgot password?</Link> · <Link href="/register" className="underline">Create account</Link></p>
+      <p className="mt-4 text-sm text-muted"><Link href="/forgot-password" className="underline">Forgot password?</Link> · <Link href="/register" className="underline">Create account</Link> · <Link href="/verify" className="underline">Enter verification code</Link></p>
     </PageShell>
   );
 }
